@@ -400,22 +400,22 @@ return<>
 <ConfirmModal state={confirmState} onClose={closeConfirm}/>
 {data&&<div className="shortcut-hint">⌨️ Ctrl+S 导出 · Ctrl+Z 撤销 · Ctrl+Shift+Z 重做 · Ctrl+V 粘贴图片</div>}
 <FloatingTrBar show={trMinimized&&md2.cmp} progress={pg} items={ci} eta={eta} translating={tl} onRestore={()=>sTrMin(false)} onCancel={cancelTranslation}/>
-{md2.settings&&<SM show onClose={()=>sm('settings',0)} pv={pv} pi={pi} onSave={(p,i)=>{sPV(p);sPI(i)}} cm={cm} sCM={sCM}/>}
-{md2.prompt&&<PM show onClose={()=>sm('prompt',0)} cfg={cfg} onSave={sCFG} list={pL} setList={sPL}/>}
-{md2.jb&&<JBM show onClose={()=>sm('jb',0)} cfg={cfg} onSave={sCFG} list={jL} setList={sJL}/>}
-{md2.guide&&<GuideModal show onClose={()=>sm('guide',0)} guideRows={gR} onSave={sGR} gList={gL} setGList={sGL}/>}
-{md2.rpl&&<RM show onClose={()=>sm('rpl',0)} onR={handleReplace} data={data}/>}
-{md2.clr&&<Mdl show onClose={()=>sm('clr',0)} title="⚠️ 清空" headerClass="danger" footer={<><button className="btn danger" onClick={()=>{clearContent();sm('clr',0)}}>🗑️</button><button className="btn secondary" onClick={()=>sm('clr',0)}>取消</button></>}><p>清空所有？可撤销。</p></Mdl>}
-{md2.exp&&<Mdl show onClose={()=>sm('exp',0)} title="💾 导出" headerClass="success"><div className="export-options">{[['png','🖼️','PNG','含角色数据的图片'],['json','📄','JSON','纯数据'],['both','📦','两者','同时导出']].map(([t,ic,ti,de])=><div key={t} className="export-option" onClick={()=>handleExport(t)}><span className="icon">{ic}</span><div className="info"><div className="title">{ti}</div><div className="desc">{de}</div></div></div>)}</div></Mdl>}
-{md2.batch&&<BatchMdl show onClose={()=>sm('batch',0)} onStart={(f2,gp)=>handleBatchStart(f2,gp,'basic')} title="🌸 基础" fields={BATCH_BASIC} at2={at2} setAT={sAT} gT={greetTotal} concurrency={concurrency} setConcurrency={setConcurrency}/>}
-{md2.adv&&<BatchMdl show onClose={()=>sm('adv',0)} onStart={(f2,gp)=>handleBatchStart(f2,gp,'adv')} title="🌸 高级" fields={BATCH_ADV} at2={at2} setAT={sAT} gT={0} concurrency={concurrency} setConcurrency={setConcurrency}/>}
-{md2.wb&&<BatchMdl show onClose={()=>sm('wb',0)} onStart={(f2,gp)=>handleBatchStart(f2,gp,'wb')} title="🌸 世界书" fields={Object.fromEntries((data?.book_entries||[]).map(e=>[e._id||e.name,1]))} at2={at2} setAT={sAT} gT={0} concurrency={concurrency} setConcurrency={setConcurrency}/>}
-<TrMdl show={md2.cmp} onClose={()=>{if(!tl){sm('cmp',0);sTrMin(false)}}} items={ci} setItems={sCI} onApply={applyTr} translating={tl} progress={pg} onRetry={handleRetry} onCancel={cancelTranslation} eta={eta} minimized={trMinimized} onMinimize={()=>sTrMin(true)} onRestore={()=>sTrMin(false)}/>
+{!!md2.settings&&<SM show onClose={()=>sm('settings',0)} pv={pv} pi={pi} onSave={(p,i)=>{sPV(p);sPI(i)}} cm={cm} sCM={sCM}/>}
+{!!md2.prompt&&<PM show onClose={()=>sm('prompt',0)} cfg={cfg} onSave={sCFG} list={pL} setList={sPL}/>}
+{!!md2.jb&&<JBM show onClose={()=>sm('jb',0)} cfg={cfg} onSave={sCFG} list={jL} setList={sJL}/>}
+{!!md2.guide&&<GuideModal show onClose={()=>sm('guide',0)} guideRows={gR} onSave={sGR} gList={gL} setGList={sGL}/>}
+{!!md2.rpl&&<RM show onClose={()=>sm('rpl',0)} onR={handleReplace} data={data}/>}
+{!!md2.clr&&<Mdl show onClose={()=>sm('clr',0)} title="⚠️ 清空" headerClass="danger" footer={<><button className="btn danger" onClick={()=>{clearContent();sm('clr',0)}}>🗑️</button><button className="btn secondary" onClick={()=>sm('clr',0)}>取消</button></>}><p>清空所有？可撤销。</p></Mdl>}
+{!!md2.exp&&<Mdl show onClose={()=>sm('exp',0)} title="💾 导出" headerClass="success"><div className="export-options">{[['png','🖼️','PNG','含角色数据的图片'],['json','📄','JSON','纯数据'],['both','📦','两者','同时导出']].map(([t,ic,ti,de])=><div key={t} className="export-option" onClick={()=>handleExport(t)}><span className="icon">{ic}</span><div className="info"><div className="title">{ti}</div><div className="desc">{de}</div></div></div>)}</div></Mdl>}
+{!!md2.batch&&<BatchMdl show onClose={()=>sm('batch',0)} onStart={(f2,gp)=>handleBatchStart(f2,gp,'basic')} title="🌸 基础" fields={BATCH_BASIC} at2={at2} setAT={sAT} gT={greetTotal} concurrency={concurrency} setConcurrency={setConcurrency}/>}
+{!!md2.adv&&<BatchMdl show onClose={()=>sm('adv',0)} onStart={(f2,gp)=>handleBatchStart(f2,gp,'adv')} title="🌸 高级" fields={BATCH_ADV} at2={at2} setAT={sAT} gT={0} concurrency={concurrency} setConcurrency={setConcurrency}/>}
+{!!md2.wb&&<BatchMdl show onClose={()=>sm('wb',0)} onStart={(f2,gp)=>handleBatchStart(f2,gp,'wb')} title="🌸 世界书" fields={Object.fromEntries((data?.book_entries||[]).map(e=>[e._id||e.name,1]))} at2={at2} setAT={sAT} gT={0} concurrency={concurrency} setConcurrency={setConcurrency}/>}
+<TrMdl show={!!md2.cmp} onClose={()=>{if(!tl){sm('cmp',0);sTrMin(false)}}} items={ci} setItems={sCI} onApply={applyTr} translating={tl} progress={pg} onRetry={handleRetry} onCancel={cancelTranslation} eta={eta} minimized={trMinimized} onMinimize={()=>sTrMin(true)} onRestore={()=>sTrMin(false)}/>
 {fe.show&&<Mdl show onClose={()=>sFE({show:false,field:'',title:'',entryIdx:null})} title={fe.title} fullscreen footer={<><button className="btn primary" onClick={()=>{const el=document.getElementById('fe-ta');if(el){if(fe.field==='_outline_')setOT(el.value);else handleFESave(el.value)}sFE({show:false,field:'',title:'',entryIdx:null})}}>💾</button><button className="btn secondary" onClick={()=>sFE({show:false,field:'',title:'',entryIdx:null})}>取消</button></>}><textarea id="fe-ta" className="full-editor-textarea" defaultValue={fe.field==='_outline_'?ot:fe.entryIdx!==null?(data?.book_entries?.[fe.entryIdx]?.content||''):fe.field?.startsWith('_g_')?(data?.alternate_greetings?.[parseInt(fe.field.replace('_g_',''))-1]||''):(data?.[fe.field]||'')}/></Mdl>}
-{md2.backup&&<BKM show onClose={()=>sm('backup',0)} pv={pv} pi={pi} cfg={cfg} jL={jL} pL={pL} gr={gR} gL={gL} onApply={handleApplyBackup} at={at}/>}
-{md2.gen&&<GenModal show onClose={()=>sm('gen',0)} onApply={handleGenApply} pv={pv} pi={pi} model={model} gi={gi}/>}
-{md2.greetGen&&<GreetGenModal show onClose={()=>sm('greetGen',0)} data={data} onApply={handleGreetApply} pv={pv} pi={pi} model={model}/>}
-{md2.sfPreview&&<SmartFillPreviewModal show onClose={()=>sm('sfPreview',0)} parsed={sfPreviewData} currentData={data||{}} onConfirm={confirmSmartFill}/>}
+{!!md2.backup&&<BKM show onClose={()=>sm('backup',0)} pv={pv} pi={pi} cfg={cfg} jL={jL} pL={pL} gr={gR} gL={gL} onApply={handleApplyBackup} at={at}/>}
+{!!md2.gen&&<GenModal show onClose={()=>sm('gen',0)} onApply={handleGenApply} pv={pv} pi={pi} model={model} gi={gi}/>}
+{!!md2.greetGen&&<GreetGenModal show onClose={()=>sm('greetGen',0)} data={data} onApply={handleGreetApply} pv={pv} pi={pi} model={model}/>}
+{!!md2.sfPreview&&<SmartFillPreviewModal show onClose={()=>sm('sfPreview',0)} parsed={sfPreviewData} currentData={data||{}} onConfirm={confirmSmartFill}/>}
 </>;
 };
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
