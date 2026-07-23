@@ -2,10 +2,10 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-<!-- @SLOT:PAGE_TITLE -->
-<title>🐱 喵喵角色卡工坊 - 本地版</title>
-<!-- @SLOT:PAGE_TITLE_END -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <!-- @SLOT:PAGE_TITLE -->
+  <title>🐱 喵喵角色卡工坊 - 本地版</title>
+  <!-- @SLOT:PAGE_TITLE_END -->
   <meta name="theme-color" content="#66ccff" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -2170,36 +2170,53 @@ html, body {
     .loading-dots::after { content: ''; animation: dots 1.5s infinite }
     @keyframes dots { 0% { content: '' } 25% { content: '.' } 50% { content: '..' } 75% { content: '...' } }
 
+    /* 优化后的统计卡片样式 */
     .stats-card {
-      background: var(--white);
-      border: 2px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      margin-bottom: 20px
+      margin-bottom: 24px;
     }
-
     .stats-card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 18px;
-      /* 改用更柔和的蓝紫渐变，适配亮色与暗色 */
-      background: linear-gradient(135deg, var(--sky-pale), var(--lavender));
-      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
       cursor: pointer;
-      font-weight: 700;
-      color: var(--text-dark);
-      font-size: 14px;
       transition: var(--transition);
-      min-height: 48px
+      min-height: 52px;
+      position: relative;
+      z-index: 2; /* 确保头部在最上层 */
     }
     [data-theme="dark"] .stats-card-header {
-      /* 暗黑模式下使用深灰底色，彻底消除割裂感 */
-      background: linear-gradient(135deg, var(--cream-soft), var(--cream-deep));
+      background: var(--cream);
+      border-color: var(--border);
     }
-    .stats-card-header:hover { filter: brightness(.97) }
-    .stats-card-header:active { filter: brightness(.94) }
-    .stats-card.collapsed .stats-card-body { display: none }
+    .stats-card-header:hover {
+      border-color: var(--sky-soft);
+      box-shadow: 0 4px 12px var(--shadow-soft);
+    }
+    .stats-card.collapsed .stats-card-header {
+      box-shadow: none;
+    }
+    .stats-card-body {
+      padding: 16px 20px;
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
+      margin-top: -10px; 
+      padding-top: 26px; /* 增加上边距，防止文字被头部挡住 */
+      position: relative;
+      z-index: 1; /* 修复空白问题：从 -1 改为 1，确保它显示在背景前面 */
+    }
+    [data-theme="dark"] .stats-card-body {
+      background: var(--cream);
+      border-color: var(--border);
+    }
+    .stats-card.collapsed .stats-card-body { display: none; }
+	
+	
     .stats-total { font-size: 16px; color: var(--sky); font-weight: 700 }
     .stats-card-body { padding: 16px 18px }
     .stats-row { display: flex; align-items: center; gap: 10px; padding: 5px 0 }
@@ -2504,23 +2521,24 @@ html, body {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px;
-      padding: 6px 4px;
+      gap: 4px;
+      padding: 8px 4px;
       border: none;
       background: transparent;
       font-size: 10px;
       font-weight: 600;
       color: var(--text-soft);
       cursor: pointer;
-      border-radius: 12px;
-      min-width: 56px;
-      min-height: 48px;
+      border-radius: 16px;
+      min-width: 60px;
+      min-height: 54px;
       justify-content: center;
-      transition: var(--transition)
+      transition: all 0.2s ease;
     }
-    .mobile-bottom-btn .mbb-icon { font-size: 20px; line-height: 1 }
-    .mobile-bottom-btn:active { background: var(--sky-pale); transform: scale(.9); color: var(--sky); box-shadow: 0 0 0 2px var(--sky-soft) inset }
-    .mobile-bottom-btn:disabled { opacity: .3; pointer-events: none }
+    .mobile-bottom-btn .mbb-icon { font-size: 22px; line-height: 1; transition: transform 0.2s ease; }
+    .mobile-bottom-btn:active .mbb-icon { transform: translateY(-4px) scale(1.1); }
+    .mobile-bottom-btn:active { background: var(--sky-pale); color: var(--sky); }
+    .mobile-bottom-btn:disabled { opacity: .3; pointer-events: none; filter: grayscale(1); }
     .mobile-bottom-btn.primary { color: var(--sky) }
     .mobile-bottom-btn.success { color: var(--mint-dark) }
     .mobile-bottom-btn.warning { color: var(--orange) }
@@ -2681,83 +2699,92 @@ html, body {
       .guide-row { flex-wrap: wrap }
       .guide-row .src, .guide-row .dst { min-width: calc(50% - 30px) }
 
-      /* U16: Bottom sheet modals */
-      .modal-overlay { align-items: flex-end; padding: 0 }
+      /* U16: Bottom sheet modals (手机端底部滑出弹窗) */
+      .modal-overlay { align-items: flex-end; padding: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); }
       .modal {
-        border-radius: 20px 20px 0 0;
-        max-height: calc(92vh - var(--safe-top));
-        animation: slideUpSheet .3s cubic-bezier(.32, .72, 0, 1);
-        touch-action: none
+        border-radius: 24px 24px 0 0;
+        max-height: calc(90vh - var(--safe-top));
+        animation: slideUpSheet .35s cubic-bezier(0.2, 0.8, 0.2, 1);
+        touch-action: pan-y;
+        box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
       }
       .modal.fullscreen { max-width: 100vw; max-height: calc(100vh - var(--safe-top)); border-radius: 0 }
 
       @keyframes slideUpSheet {
-        from { opacity: 1; transform: translateY(100%) }
+        from { opacity: 0.8; transform: translateY(100%) }
         to { opacity: 1; transform: translateY(0) }
       }
 
       .modal-drag-handle {
         display: block;
-        width: 40px;
-        height: 5px;
-        background: var(--cream-deep);
+        width: 48px;
+        height: 6px;
+        background: var(--text-soft);
+        opacity: 0.3;
         border-radius: 3px;
-        margin: 10px auto 2px;
+        margin: 12px auto 4px;
         flex-shrink: 0;
-        cursor: grab
+        cursor: grab;
       }
 
-      .modal-header { padding: 14px 18px }
-      .modal-body { padding: 16px }
-      .modal-footer { padding: 12px 16px calc(12px + var(--safe-bottom)); gap: 8px }
+      .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border); background: var(--white); color: var(--text-dark); }
+      .modal-header h2 { font-size: 17px; }
+      .modal-body { padding: 20px }
+      .modal-footer { padding: 16px 20px calc(16px + var(--safe-bottom)); gap: 12px; background: var(--white); border-top: 1px solid var(--border); }
+      
       .history-section { margin-top: 24px; padding-top: 20px }
-      .history-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px }
-      .history-item { max-width: 100%; min-width: 0; padding: 8px 10px; min-height: 54px }
+      .history-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px }
+      .history-item { max-width: 100%; min-width: 0; padding: 12px; min-height: 60px; border-radius: 16px; }
       .history-item .delete { opacity: 1; min-width: 32px; min-height: 32px; padding: 4px 6px; font-size: 14px }
-      .history-item img { width: 30px; height: 40px }
-      .history-item .placeholder { width: 30px; height: 40px; font-size: 14px }
-      .history-item .name { font-size: 12px }
-      .history-item .date { font-size: 10px }
-      .export-section { padding: 16px }
+      .history-item img { width: 36px; height: 48px; border-radius: 8px; }
+      .history-item .placeholder { width: 36px; height: 48px; font-size: 16px; border-radius: 8px; }
+      .history-item .name { font-size: 13px; font-weight: bold; }
+      .history-item .date { font-size: 11px; margin-top: 4px; }
+      .export-section { padding: 20px; border-radius: 16px; }
 
-      /* U-8: Fixed toast on mobile - above bottom bar */
+      /* U-8: Fixed toast on mobile - top centered */
       .toast-container {
         bottom: auto;
-        top: calc(12px + var(--safe-top));
-        right: 12px;
-        left: 12px
+        top: calc(16px + var(--safe-top));
+        right: 16px;
+        left: 16px;
+        align-items: center;
       }
 
-      .toast { min-width: auto }
+      .toast { min-width: 90%; border-radius: 16px; }
       @keyframes toastIn {
-        from { opacity: 0; transform: translateY(-30px) }
-        to { opacity: 1; transform: translateY(0) }
+        from { opacity: 0; transform: translateY(-30px) scale(0.9) }
+        to { opacity: 1; transform: translateY(0) scale(1) }
       }
 
-      .gen-fields-grid { grid-template-columns: 1fr }
-      .concurrency-control input[type="range"] { width: 60px }
-      .batch-actions { margin-bottom: 16px }
-      .batch-actions .btn { width: 100%; justify-content: center }
+      .gen-fields-grid { grid-template-columns: 1fr; gap: 16px; }
+      .concurrency-control input[type="range"] { width: 80px }
+      .batch-actions { margin-bottom: 20px }
+      .batch-actions .btn { width: 100%; justify-content: center; border-radius: 16px; height: 48px; }
 
-      /* Bottom bar */
+      /* Bottom bar (高级毛玻璃底部导航) */
       .mobile-bottom-bar {
         display: flex;
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        background: var(--white);
-        border-top: 2px solid var(--border);
-        padding: 4px 8px env(safe-area-inset-bottom, 4px);
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 6px 12px calc(6px + env(safe-area-inset-bottom, 0px));
         z-index: 900;
-        gap: 0;
-        justify-content: space-around;
+        gap: 8px;
+        justify-content: space-between;
         align-items: center;
-        box-shadow: 0 -4px 20px var(--shadow-soft)
+        box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.03);
       }
-      .mobile-bottom-btn { min-width: 0; flex: 1; max-width: 72px; padding: 4px 2px; min-height: 50px }
-      .mobile-bottom-btn .mbb-icon { font-size: 22px }
-      .mobile-bottom-btn .mbb-label { font-size: 9px; white-space: nowrap }
+      [data-theme="dark"] .mobile-bottom-bar {
+        background: rgba(30, 41, 59, 0.85);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .mobile-bottom-btn { flex: 1; }
 
       /* Floating bar above bottom bar */
       .tr-mini-bar {
@@ -3031,8 +3058,38 @@ html, body {
   color: var(--sky);
 }
 @media (max-width: 768px) {
-  .wb-nav-fab { right: 8px; padding: 4px; gap: 4px; }
-  .wb-nav-fab button { width: 28px; height: 28px; font-size: 14px; }
+  /* 恢复悬浮导航到右侧，增加毛玻璃透明度，避免遮挡文字 */
+  .wb-nav-fab { 
+    right: 4px; 
+    padding: 6px 4px; 
+    gap: 8px; 
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+  }
+  .wb-nav-fab button { 
+    width: 32px; 
+    height: 32px; 
+    font-size: 16px; 
+    background: rgba(255, 255, 255, 0.5); 
+  }
+  
+  /* 优化展开后的网格表单（位置、深度等输入框），让它们在手机上自动换行铺满 */
+  .entry-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 手机端变成两列 */
+    gap: 12px;
+  }
+  .entry-grid .grid-field {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .entry-grid .grid-field input[type="number"], 
+  .entry-grid .grid-field select {
+    width: 100%; /* 输入框占满整列 */
+  }
 }
 
 /* 移动端 AI 面板适配 */
@@ -3042,16 +3099,18 @@ html, body {
     right: 0;
     width: 100vw;
     max-width: 100vw;
-    height: 75vh;
-    border-radius: 20px 20px 0 0;
+    height: 80vh;
+    border-radius: 24px 24px 0 0;
     border-bottom: none;
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
   }
   .ai-fab {
-    bottom: calc(80px + var(--bottom-bar-h));
-    right: 16px;
-    width: 48px;
-    height: 48px;
-    font-size: 24px;
+    bottom: calc(90px + env(safe-area-inset-bottom, 0px)); /* 抬高一点，防止和底部栏打架 */
+    right: 20px;
+    width: 52px;
+    height: 52px;
+    font-size: 26px;
+    box-shadow: 0 8px 20px rgba(159, 122, 234, 0.5);
   }
 }
 
@@ -3181,6 +3240,20 @@ html, body {
 .drag-handle:hover { opacity: 1; transform: scaleX(1.2); }
 .drag-handle:active { cursor: grabbing; }
 
+/* 展开时的可爱短横线拖拽手柄 (移到底部) */
+.drag-handle {
+  width: 32px;
+  height: 6px;
+  background: var(--sky-soft);
+  border-radius: 3px;
+  cursor: grab;
+  opacity: 0.5;
+  transition: opacity 0.2s, transform 0.2s;
+  margin-top: 4px; /* 改为距顶部留白 */
+}
+.drag-handle:hover { opacity: 1; transform: scaleX(1.2); }
+.drag-handle:active { cursor: grabbing; }
+
 /* 折叠时的小圆球按钮 */
 .cute-fab-btn {
   width: 44px;
@@ -3218,10 +3291,10 @@ html, body {
 .desktop-sticky-bar button.tool-btn .icon { font-size: 18px; line-height: 1; }
 .desktop-sticky-bar button.tool-btn .label { font-size: 9px; font-weight: 700; }
 .desktop-sticky-bar button.tool-btn:hover {
-  transform: translateY(-4px) scale(1.05); /* 向上微弹 */
+  transform: translateY(-4px) scale(1.05);
   background: var(--sky-pale);
   color: var(--sky);
-  border-radius: 16px; /* 变方一点点 */
+  border-radius: 16px;
 }
 .desktop-sticky-bar button.export-btn-cute {
   background: linear-gradient(135deg, var(--mint-dark), var(--mint-soft));
@@ -3233,27 +3306,39 @@ html, body {
   box-shadow: 0 6px 20px rgba(52, 211, 153, 0.4);
 }
 
-/* 收起按钮 */
+/* 收起按钮 (移到顶部，极致无感设计) */
 .desktop-sticky-bar button.toolbar-toggle-btn {
-  background: var(--blush-soft);
-  color: #c9939c;
-  height: 28px;
-  width: 28px;
-  border-radius: 14px;
-  margin-top: 4px;
+  background: transparent;
+  color: var(--text-soft);
+  height: 20px;
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 4px;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.2s;
+  opacity: 0.4; /* 默认很淡 */
 }
 .desktop-sticky-bar button.toolbar-toggle-btn:hover {
-  background: var(--blush);
-  color: white;
-  transform: scale(1.15);
+  background: rgba(0, 0, 0, 0.05);
+  opacity: 1;
 }
-@media(max-width:768px) { .desktop-sticky-bar { display: none; } }
+[data-theme="dark"] .desktop-sticky-bar button.toolbar-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+/* 让悬浮工具栏在手机端显示，并稍微缩小以防挡住过多内容 */
+@media(max-width:768px) { 
+  .desktop-sticky-bar { 
+    transform: scale(0.85); 
+    transform-origin: top left;
+  } 
+  .desktop-sticky-bar.collapsed:hover {
+    transform: scale(0.95);
+  }
+}
 
 .drawer-panel {
   position: fixed;
@@ -3818,7 +3903,16 @@ var { useState, useEffect, useCallback, useMemo, useRef, memo, Component, create
     });
 
     /* ═══════════ Mobile Bottom Bar ═══════════ */
-    const MobileBottomBar = memo(({ data, tab, onTranslate, onExport, onUndo, onRedo, canUndo, canRedo, onReplace }) => { if (!data) return null; return html`<nav class="mobile-bottom-bar" role="toolbar" aria-label="快捷操作"><button class="mobile-bottom-btn primary" onClick=${onTranslate} aria-label="翻译"><span class="mbb-icon" aria-hidden="true">🌸</span><span class="mbb-label">翻译</span></button><button class="mobile-bottom-btn warning" onClick=${onReplace} aria-label="查找替换"><span class="mbb-icon" aria-hidden="true">🔁</span><span class="mbb-label">替换</span></button><button class="mobile-bottom-btn" onClick=${onUndo} disabled=${!canUndo} aria-label="撤销"><span class="mbb-icon" aria-hidden="true">↶</span><span class="mbb-label">撤销</span></button><button class="mobile-bottom-btn" onClick=${onRedo} disabled=${!canRedo} aria-label="重做"><span class="mbb-icon" aria-hidden="true">↷</span><span class="mbb-label">重做</span></button><button class="mobile-bottom-btn success" onClick=${onExport} aria-label="导出"><span class="mbb-icon" aria-hidden="true">💾</span><span class="mbb-label">导出</span></button></nav>` });
+    const MobileBottomBar = memo(({ data, tab, onTranslate, onExport, onUndo, onRedo, canUndo, canRedo, onReplace }) => { 
+      if (!data) return null; 
+      return html`<nav class="mobile-bottom-bar" role="toolbar" aria-label="快捷操作">
+        <button class="mobile-bottom-btn primary" onClick=${onTranslate} aria-label="翻译"><span class="mbb-icon" aria-hidden="true">🌸</span><span class="mbb-label">翻译</span></button>
+        <button class="mobile-bottom-btn warning" onClick=${onReplace} aria-label="查找替换"><span class="mbb-icon" aria-hidden="true">🔁</span><span class="mbb-label">替换</span></button>
+        <button class="mobile-bottom-btn" onClick=${onUndo} disabled=${!canUndo} aria-label="撤销"><span class="mbb-icon" aria-hidden="true">↶</span><span class="mbb-label">撤销</span></button>
+        <button class="mobile-bottom-btn" onClick=${onRedo} disabled=${!canRedo} aria-label="重做"><span class="mbb-icon" aria-hidden="true">↷</span><span class="mbb-label">重做</span></button>
+        <button class="mobile-bottom-btn success" onClick=${onExport} aria-label="导出"><span class="mbb-icon" aria-hidden="true">💾</span><span class="mbb-label">导出</span></button>
+      </nav>` 
+    });
 
     /* ═══════════ U6: Tag Chips Component (支持自动联想) ═══════════ */
     const COMMON_TAGS = ['傲娇', '病娇', '纯爱', '奇幻', '现代', '科幻', '百合', '后宫', '战斗', '日常', '腹黑', '无口', '人外', '魔法', '校园', '悬疑', '治愈'];
@@ -3984,53 +4078,96 @@ var { useState, useEffect, useCallback, useMemo, useRef, memo, Component, create
         })}
       </div>`;
     });
-	
+
     /* ═══════════ 世界书 ═══════════ */
-    /* U1: 添加了 position, role, probability 选项 */
+/* U1: 兼容数字与字符串、支持酒馆/Luck原生文本位置的强力映射方案 */
     const WB_POSITIONS = [
-      { label: "角色定义之前", pos: 0, role: 0 },
-      { label: "角色定义之后", pos: 1, role: 0 },
-      { label: "作者注释之前", pos: 2, role: 0 },
-      { label: "作者注释之后", pos: 3, role: 0 },
-      { label: "@D [系统]", pos: 4, role: 0 },
-      { label: "@D [用户]", pos: 4, role: 1 },
-      { label: "@D [AI]", pos: 4, role: 2 },
-      { label: "示例消息前", pos: 5, role: 0 },
-      { label: "示例消息后", pos: 6, role: 0 }
+      { label: "角色定义之前", pos: 0, role: 0, keys: [0, "0", "before_char", "角色定义之前"] },
+      { label: "角色定义之后", pos: 1, role: 0, keys: [1, "1", "after_char", "角色定义之后"] },
+      { label: "作者注释之前", pos: 2, role: 0, keys: [2, "2", "before_author", "作者注释之前"] },
+      { label: "作者注释之后", pos: 3, role: 0, keys: [3, "3", "after_author", "作者注释之后"] },
+      { label: "@D [系统]", pos: 4, role: 0, keys: [4, "4", "system"] },
+      { label: "@D [用户]", pos: 4, role: 1, keys: ["user"] },
+      { label: "@D [AI]", pos: 4, role: 2, keys: ["ai"] },
+      { label: "示例消息前", pos: 5, role: 0, keys: [5, "5", "before_em"] },
+      { label: "示例消息后", pos: 6, role: 0, keys: [6, "6", "after_em"] }
     ];
 
     const BookEntry = memo(({ entry, index, onChange, onRemove, collapsed, onToggle, onExpandContent, onMoveUp, onMoveDown, isFirst, isLast, onDuplicate, selected, onSelect, allGroups }) => { 
       const update = (k, v) => onChange(index, k, v); 
       const updateMulti = (obj) => onChange(index, obj);
-      
-      // 强制转换为数字，防止因字符串格式导致匹配失败
-      const posNum = Number(entry.position ?? 0);
-      const roleNum = Number(entry.role ?? 0);
+
+      // 融合 Luck & 清清丫的兼容逻辑：同时支持数字下标、字符串和英文代号匹配
+      const rawPos = entry.position ?? 0;
+      const rawRole = entry.role ?? 0;
+      const matchedPosObj = WB_POSITIONS.find(op => 
+        op.keys.includes(rawPos) || op.pos === Number(rawPos) && (op.role === Number(rawRole) || rawRole === 0)
+      );
+      const posNum = matchedPosObj ? matchedPosObj.pos : 0;
+      const roleNum = matchedPosObj ? matchedPosObj.role : 0;
       const posValue = `${posNum}_${roleNum}`;
-      const posLabel = WB_POSITIONS.find(op => op.pos === posNum && op.role === roleNum)?.label || "未知位置";
+      const posLabel = matchedPosObj ? matchedPosObj.label : "角色定义之前";
+// 新增：自动判断当前是 PC 还是 移动端 (<=768px 为移动端)
+const isMobileView = typeof window !== 'undefined' && window.innerWidth <= 768;
 
       return html`<div id="wb-entry-${index}" class="book-entry wb-entry-item ${collapsed ? 'collapsed' : ''}">
-        <div class="entry-header" onClick=${onToggle} style=${{ display: 'flex', flexDirection: 'column', padding: '12px 18px', gap: '8px', minHeight: 'auto' }}>
-     <div style=${{ display: 'flex', alignItems: 'center', width: '100%', gap: '10px' }}>
-            <span class="collapse-icon">▼</span>
-            <span class="wb-status-dot" title=${entry.constant ? '常驻激活 (Constant)' : '关键词触发 (Selective)'} style=${{ background: entry.constant ? '#66ccff' : '#7cc9b8' }}></span>
-			
-            ${onSelect && html`<input type="checkbox" checked=${!!selected} onClick=${e => e.stopPropagation()} onChange=${e => onSelect(index, e.target.checked)} style=${{ width: 20, height: 20, accentColor: 'var(--sky)', flexShrink: 0 }}/>`}
-            <input value=${entry.name || ''} onChange=${e => { e.stopPropagation(); update('name', e.target.value) }} onClick=${e => e.stopPropagation()} placeholder=${(Array.isArray(entry.key) && entry.key[0]) || '条目标题（名称为空时显示关键词）'} style=${{ flex: '1', minWidth: '0', fontSize: '15px' }}/>
-            <div class="entry-actions" onClick=${e => e.stopPropagation()}>
+        <div class="entry-header" onClick=${onToggle} style=${{ display: 'flex', flexDirection: 'column', padding: '12px 16px', gap: '8px', minHeight: 'auto' }}>
+          
+          <div style=${{ display: 'flex', justifyContent: 'space-between', alignItems: isMobileView ? 'center' : 'flex-start', width: '100%' }}>
+            
+            <div style=${{ display: 'flex', alignItems: 'center', gap: '8px', flex: isMobileView ? 'none' : 1, minWidth: isMobileView ? 'auto' : '150px' }}>
+              <span class="collapse-icon">▼</span>
+              <span class="wb-status-dot" title=${entry.constant ? '常驻激活' : '关键词触发'} style=${{ background: entry.constant ? '#66ccff' : '#7cc9b8', flexShrink: 0 }}></span>
+              ${onSelect && html`<input type="checkbox" checked=${!!selected} onClick=${e => e.stopPropagation()} onChange=${e => onSelect(index, e.target.checked)} style=${{ width: 20, height: 20, accentColor: 'var(--sky)', flexShrink: 0, margin: 0 }}/>`}
+              ${!isMobileView ? html`<span style=${{ fontSize: '12px', color: 'var(--text-soft)', fontWeight: 'bold' }}>#${index + 1}</span>` : null}
+            </div>
+
+            ${isMobileView ? html`<span style=${{ fontSize: '12px', color: 'var(--text-soft)', fontWeight: 'bold' }}>#${index + 1}</span>` : null}
+
+            ${!isMobileView ? html`
+              <div style=${{ flex: 2, textAlign: 'center', padding: '0 10px', display: 'flex', alignItems: 'center' }}>
+                <textarea value=${entry.name || ''} onChange=${e => { e.stopPropagation(); update('name', e.target.value) }} onClick=${e => e.stopPropagation()} placeholder=${(Array.isArray(entry.key) && entry.key[0]) || '条目标题（名称为空时显示关键词）'} rows="1" style=${{ width: '100%', textAlign: 'center', fontSize: '17px', background: 'transparent', border: 'none', outline: 'none', color: 'var(--text-dark)', fontWeight: 'bold', resize: 'none', overflow: 'hidden', lineHeight: '1.4', wordBreak: 'break-word', display: 'block', padding: 0 }} onInput=${e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px'; }} ref=${el => { if(el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}/>
+              </div>
+            ` : null}
+
+            ${!isMobileView ? html`
+              <div class="entry-actions" onClick=${e => e.stopPropagation()} style=${{ display: 'flex', flexWrap: 'nowrap', justifyContent: 'flex-end', alignItems: 'center', gap: '6px', flex: 1, minWidth: '150px' }}>
+                <button class="btn-sm sky" onClick=${onMoveUp} disabled=${isFirst} aria-label="上移">↑</button>
+                <button class="btn-sm sky" onClick=${onMoveDown} disabled=${isLast} aria-label="下移">↓</button>
+                <button class="btn-sm mint" onClick=${onDuplicate} aria-label="复制">📋</button>
+                <div style=${{ display: 'flex', alignItems: 'center', marginLeft: '4px', gap: '6px' }}>
+                  <${Toggle} label="启用" checked=${entry.enabled !== false} onChange=${v => update('enabled', v)}/>
+                  <button class="btn-sm blush" onClick=${() => onRemove(index)} aria-label="删除">删除</button>
+                </div>
+              </div>
+            ` : null}
+          </div>
+
+          ${isMobileView ? html`
+            <div style=${{ width: '100%', padding: '4px 0', display: 'flex', justifyContent: 'center' }}>
+              <textarea value=${entry.name || ''} onChange=${e => { e.stopPropagation(); update('name', e.target.value) }} onClick=${e => e.stopPropagation()} placeholder=${(Array.isArray(entry.key) && entry.key[0]) || '条目标题（名称为空时显示关键词）'} rows="1" style=${{ width: '100%', textAlign: 'center', fontSize: '17px', background: 'transparent', border: 'none', outline: 'none', color: 'var(--text-dark)', fontWeight: 'bold', resize: 'none', overflow: 'hidden', lineHeight: '1.4', wordBreak: 'break-word', display: 'block', padding: 0 }} onInput=${e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px'; }} ref=${el => { if(el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; } }}/>
+            </div>
+          ` : null}
+
+          ${isMobileView ? html`
+            <div class="entry-actions" onClick=${e => e.stopPropagation()} style=${{ display: 'flex', flexWrap: 'nowrap', justifyContent: 'center', gap: '6px', width: '100%', alignItems: 'center', background: 'var(--cream)', padding: '6px 8px', borderRadius: '8px', overflowX: 'auto', scrollbarWidth: 'none' }}>
               <button class="btn-sm sky" onClick=${onMoveUp} disabled=${isFirst} aria-label="上移">↑</button>
               <button class="btn-sm sky" onClick=${onMoveDown} disabled=${isLast} aria-label="下移">↓</button>
               <button class="btn-sm mint" onClick=${onDuplicate} aria-label="复制">📋</button>
-              <${Toggle} label="启用" checked=${entry.enabled !== false} onChange=${v => update('enabled', v)}/>
-              <button class="btn-sm blush" onClick=${() => onRemove(index)} aria-label="删除条目">删除</button>
+              <div style=${{ display: 'flex', alignItems: 'center', marginLeft: '2px', gap: '6px' }}>
+                <${Toggle} label="启用" checked=${entry.enabled !== false} onChange=${v => update('enabled', v)}/>
+                <button class="btn-sm blush" onClick=${() => onRemove(index)} aria-label="删除">删除</button>
+              </div>
             </div>
+          ` : null}
+
+          <div style=${{ display: 'flex', gap: '12px', fontSize: '12px', color: 'var(--text-soft)', flexWrap: 'wrap', justifyContent: 'center', width: '100%', marginTop: '4px' }}>
+            <span style=${{ whiteSpace: 'nowrap' }}>📍 ${posLabel}</span>
+            ${posNum === 4 ? html`<span style=${{ whiteSpace: 'nowrap' }}>🐚 深度: ${entry.depth ?? 4}</span>` : null}
+            <span style=${{ whiteSpace: 'nowrap' }}>⚙️ 顺序: ${entry.order ?? (entry.insertion_order ?? 100)}</span>
+            <span style=${{ whiteSpace: 'nowrap' }}>🎲 触发: ${entry.probability ?? 100}%</span>
           </div>
-          <div style=${{ display: 'flex', gap: '16px', fontSize: '12px', color: 'var(--text-soft)', paddingLeft: '30px', flexWrap: 'wrap' }}>
-            <span>📍 ${posLabel}</span>
-            <span>🐚 深度: ${entry.depth ?? 4}</span>
-            <span>⚙️ 顺序: ${entry.order ?? (entry.insertion_order ?? 100)}</span>
-            <span>🎲 触发: ${entry.probability ?? 100}%</span>
-          </div>
+          
         </div>
         <div class="entry-body">
           <div class="entry-row">
@@ -4055,7 +4192,11 @@ var { useState, useEffect, useCallback, useMemo, useRef, memo, Component, create
                 ${WB_POSITIONS.map(op => html`<option key=${`${op.pos}_${op.role}`} value=${`${op.pos}_${op.role}`}>${op.label}</option>`)}
               </select>
             </div>
-            <div class="grid-field"><label>🐚 深度</label><input type="number" value=${entry.depth ?? 4} onChange=${e => update('depth', +e.target.value)}/></div>
+            
+            ${posNum === 4 ? html`
+              <div class="grid-field"><label>🐚 深度</label><input type="number" value=${entry.depth ?? 4} onChange=${e => update('depth', +e.target.value)}/></div>
+            ` : null}
+
             <div class="grid-field"><label>⚙️ 顺序</label><input type="number" value=${entry.order ?? (entry.insertion_order ?? 100)} onChange=${e => updateMulti({ order: +e.target.value, insertion_order: +e.target.value })}/></div>
             <div class="grid-field"><label>🎲 触发%</label><input type="number" min="0" max="100" value=${entry.probability ?? 100} onChange=${e => update('probability', +e.target.value)}/></div>
             <div class="grid-field">
@@ -4232,7 +4373,8 @@ var { useState, useEffect, useCallback, useMemo, useRef, memo, Component, create
           }
         } else if (type === 'prev') {
           for (let i = items.length - 1; i >= 0; i--) {
-            if (items[i].getBoundingClientRect().top < 80) { target = items[i]; break; }
+            // 将判定线从 80 改为 10，强制跳过当前正卡在顶部的元素，精准找到真正在它上面的条目
+            if (items[i].getBoundingClientRect().top < 10) { target = items[i]; break; }
           }
         }
         if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -4253,7 +4395,21 @@ var { useState, useEffect, useCallback, useMemo, useRef, memo, Component, create
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 13 12 18 17 13"></polyline><polyline points="7 6 12 11 17 6"></polyline></svg>
           </button>
         </div>` : null}
-        ${!entries.length ? html`<div style=${{ textAlign: 'center', padding: 40, color: 'var(--text-soft)' }}><div style=${{ fontSize: 48, marginBottom: 12 }}>📚</div><p>暂无世界书条目</p><div style=${{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center', marginTop: 16 }}><button class="btn primary" style=${{ padding: '10px 20px' }} onClick=${() => setData(p => ({ ...p, book_entries: [{ name: '新条目', key: [], content: '', enabled: true, order: 100, insertion_order: 100, depth: 4, position: 0, role: null, probability: 100, _id: `wb_${Date.now()}` }] }))}>➕ 新建</button><label class="btn secondary" style=${{ padding: '10px 20px', cursor: 'pointer' }}>📥 导入完整世界书(JSON)<input ref=${wbImportRef} type="file" accept=".json" class="hidden" onChange=${e => { const f = e.target.files[0]; if (f) importWB(f); e.target.value = '' }}/></label><label class="btn success" style=${{ padding: '10px 20px', cursor: 'pointer' }}>📄 导入文档(txt/docx/zip)<input ref=${docImportRef} type="file" accept=".txt,.docx,.zip" multiple class="hidden" onChange=${e => { if (e.target.files.length) importDocs(e.target.files); e.target.value = '' }}/></label></div></div>` : html`<><div class="book-toolbar"><div class="search-box"><input placeholder="搜索..." value=${search} onChange=${e => { startTransition(() => setSearch(e.target.value)) }}/></div><button class="btn primary" style=${{ padding: '10px 16px' }} onClick=${() => setData(p => ({ ...p, book_entries: [{ name: '新条目', key: [], content: '', enabled: true, order: 100, insertion_order: 100, depth: 4, position: 0, role: null, probability: 100, _id: `wb_${Date.now()}` }, ...(p.book_entries || [])] }))}>➕ 新建</button><label class="btn secondary" style=${{ padding: '10px 16px', fontSize: 13, cursor: 'pointer' }}>📥 导入<input ref=${wbImportRef} type="file" accept=".json" class="hidden" onChange=${e => { const f = e.target.files[0]; if (f) importWB(f); e.target.value = '' }}/></label><label class="btn success" style=${{ padding: '10px 16px', fontSize: 13, cursor: 'pointer' }}>📄 批量导入文档<input ref=${docImportRef} type="file" accept=".txt,.docx,.zip" multiple class="hidden" onChange=${e => { if (e.target.files.length) importDocs(e.target.files); e.target.value = '' }}/></label><button class="btn-sm lavender" onClick=${collapseAll} aria-label="全部折叠">▲</button><button class="btn-sm lavender" onClick=${expandAll} aria-label="全部展开">▼</button><button class="btn-sm mint" onClick=${() => batchToggle(true)}>全启</button><button class="btn-sm blush" onClick=${() => batchToggle(false)}>全禁</button><button class="btn-sm orange" onClick=${sortEntries} title="不仅排序视觉位置，还会根据优先级将秩序重写编排为(1000, 990, 980)格式，防止ST导入时发生撞车。">⚡重分配级差排序</button></div>
+        ${!entries.length ? html`<div style=${{ textAlign: 'center', padding: 40, color: 'var(--text-soft)' }}><div style=${{ fontSize: 48, marginBottom: 12 }}>📚</div><p>暂无世界书条目</p><div style=${{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center', marginTop: 16 }}><button class="btn primary" style=${{ padding: '10px 20px' }} onClick=${() => setData(p => ({ ...p, book_entries: [{ name: '新条目', key: [], content: '', enabled: true, order: 100, insertion_order: 100, depth: 4, position: 0, role: null, probability: 100, _id: `wb_${Date.now()}` }] }))}>➕ 新建</button><label class="btn secondary" style=${{ padding: '10px 20px', cursor: 'pointer' }}>📥 导入完整世界书(JSON)<input ref=${wbImportRef} type="file" accept=".json" class="hidden" onChange=${e => { const f = e.target.files[0]; if (f) importWB(f); e.target.value = '' }}/></label><label class="btn success" style=${{ padding: '10px 20px', cursor: 'pointer' }}>📄 导入文档(txt/docx/zip)<input ref=${docImportRef} type="file" accept=".txt,.docx,.zip" multiple class="hidden" onChange=${e => { if (e.target.files.length) importDocs(e.target.files); e.target.value = '' }}/></label></div></div>` : html`<><div class="book-toolbar" style=${{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div class="search-box" style=${{ width: '100%' }}><input placeholder="搜索..." value=${search} onChange=${e => { startTransition(() => setSearch(e.target.value)) }}/></div>
+          <div style=${{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+            <button class="btn primary" style=${{ padding: '8px', fontSize: '13px', justifyContent: 'center' }} onClick=${() => setData(p => ({ ...p, book_entries: [{ name: '新条目', key: [], content: '', enabled: true, order: 100, insertion_order: 100, depth: 4, position: 0, role: null, probability: 100, _id: `wb_${Date.now()}` }, ...(p.book_entries || [])] }))}>➕ 新建</button>
+            <label class="btn secondary" style=${{ padding: '8px', fontSize: '13px', justifyContent: 'center', cursor: 'pointer', textAlign: 'center' }}>📥 导入JSON<input ref=${wbImportRef} type="file" accept=".json" class="hidden" onChange=${e => { const f = e.target.files[0]; if (f) importWB(f); e.target.value = '' }}/></label>
+            <label class="btn success" style=${{ padding: '8px', fontSize: '13px', justifyContent: 'center', cursor: 'pointer', textAlign: 'center' }}>📄 导入文档<input ref=${docImportRef} type="file" accept=".txt,.docx,.zip" multiple class="hidden" onChange=${e => { if (e.target.files.length) importDocs(e.target.files); e.target.value = '' }}/></label>
+          </div>
+          <div style=${{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px' }}>
+            <button class="btn-sm lavender" onClick=${collapseAll}>▲ 折叠</button>
+            <button class="btn-sm lavender" onClick=${expandAll}>▼ 展开</button>
+            <button class="btn-sm mint" onClick=${() => batchToggle(true)}>✅ 全启</button>
+            <button class="btn-sm blush" onClick=${() => batchToggle(false)}>❌ 全禁</button>
+          </div>
+          <button class="btn-sm orange" style=${{ padding: '10px', fontSize: '13px', width: '100%' }} onClick=${sortEntries} title="不仅排序视觉位置，还会根据优先级将秩序重写编排为(1000, 990, 980)格式，防止ST导入时发生撞车。">⚡ 重分配级差排序</button>
+        </div>
         ${allTags.length > 0 && html`<div style=${{marginBottom: 16, padding: 12, background: 'var(--white)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)'}}><div style=${{fontSize:12, fontWeight:'bold', color:'var(--text-soft)', marginBottom:8}}>🏷️ 标签云过滤</div><div style=${{display:'flex', flexWrap:'wrap', gap:6}}><button class="btn-sm ${!activeTag ? 'sky' : 'secondary'}" onClick=${()=>setActiveTag(null)}>全部</button>${allTags.map(t => html`<button key=${t} class="btn-sm ${activeTag === t ? 'sky' : 'secondary'}" onClick=${()=>setActiveTag(activeTag === t ? null : t)}>${t}</button>`)}</div></div>`}
         ${batchSel.size > 0 && html`<div class="wb-batch-bar"><span style=${{ fontWeight: 'bold' }}>📍 已勾选 ${batchSel.size} 个条目：</span><button style=${{ background: 'var(--blush)', borderColor: 'var(--rose)', color: '#c9939c' }} onClick=${batchDelete}>🗑️ 删除</button><button style=${{ background: 'var(--cream)', borderColor: 'var(--cream-deep)', color: 'var(--text-soft)' }} onClick=${() => setBatchSel(new Set())}>取消</button><button style=${{ background: '#e1d4ff', borderColor: '#bfa3f0', color: '#6836ce' }} onClick=${batchExportAsIndependentWB}>📥 将选中项提取另存为新世界书</button></div>`}<div style=${{ fontSize: 12, color: 'var(--text-soft)', marginBottom: 12 }}>共 ${entries.length} 个${search || activeTag ? `，匹配 ${filtered.length}` : ''}</div>${filtered.map(e => { const realIdx = entries.indexOf(e); return html`<${BookEntry} key=${e._id || realIdx} entry=${e} index=${realIdx} onChange=${updateEntry} onRemove=${idx => setData(p => ({ ...p, book_entries: entries.filter((_, j) => j !== idx) }))} collapsed=${collapsed[realIdx]} onToggle=${() => setCollapsed(p => ({ ...p, [realIdx]: !p[realIdx] }))} onExpandContent=${onExpandEntry} onMoveUp=${() => moveEntry(realIdx, -1)} onMoveDown=${() => moveEntry(realIdx, 1)} isFirst=${realIdx === 0} isLast=${realIdx === entries.length - 1} onDuplicate=${() => dupEntry(realIdx)} selected=${batchSel.has(realIdx)} onSelect=${toggleBatchSel} allGroups=${allGroups}/>` })}</>`}</div>`
     });
@@ -4337,10 +4493,81 @@ ${expandItem && html`<${Modal} show fullscreen onClose=${() => setExpandItem(nul
     /* ═══════════ 浮动条 ═══════════ */
     const FloatingTrBar = memo(({ show, progress, items, eta, onRestore, onCancel, translating }) => { if (!show) return null; const stats = items.reduce((a, i) => { a[i.status || 'pending']++; return a }, { success: 0, error: 0, pending: 0, translating: 0 }); return html`<div class="tr-mini-bar" role="status"><span class="tr-mini-icon" aria-hidden="true">🐱</span><div class="tr-mini-progress"><div class="tr-mini-fill" style=${{ width: `${progress}%` }}/></div><span class="tr-mini-text">${Math.round(progress)}%</span><div class="tr-mini-stats"><span class="s">✓${stats.success}</span><span class="e">✗${stats.error}</span></div>${eta > 0 && html`<span class="tr-mini-eta">~${eta < 60 ? Math.ceil(eta) + 's' : Math.ceil(eta / 60) + 'm'}</span>`}<button class="tr-mini-restore" onClick=${onRestore}>展开</button>${translating && html`<button class="tr-mini-cancel" onClick=${e => { e.stopPropagation(); onCancel() }} aria-label="取消翻译">⏹</button>`}</div>` });
 
-    /* ═══════════ 统计卡 — 带有 Token 进度条 ═══════════ */
-const StatsCard = memo(({ data }) => { const [col, setCol] = useState(true); if (!data) return null; const altCount = useMemo(() => (data.alternate_greetings || []).reduce((s, g) => s + charCount(g), 0), [data.alternate_greetings]); const bookCount = useMemo(() => (data.book_entries || []).reduce((s, e) => s + charCount(e.content) + charCount(e.name), 0), [data.book_entries]); const { fieldCounts, totalTokens, total } = useMemo(() => { const fc = STATS_FIELDS.map(([, k]) => [k, charCount(data[k])]); const fieldCount = fc.reduce((s, [, c]) => s + c, 0); let tk = 0; STATS_FIELDS.forEach(([, k]) => { tk += estimateTokens(data[k]) }); tk += estimateTokens((data.alternate_greetings || []).join('\n')); return { fieldCounts: fc, totalTokens: tk, total: fieldCount + altCount + bookCount } }, [data.name, data.description, data.personality, data.scenario, data.first_message, data.message_example, data.system_prompt, data.post_history_instructions, data.creator_notes, data.alternate_greetings, altCount, bookCount]); const dataSize = useMemo(() => { try { return formatBytes(new Blob([JSON.stringify(data)]).size); } catch { return '0 B'; } }, [data]); const pct = v => total ? (v / total) * 100 : 0; 
-const tokenLimit = 8192; const tokenPct = Math.min(100, (totalTokens / tokenLimit) * 100); const tokenColor = totalTokens > 6000 ? 'var(--blush)' : (totalTokens > 4000 ? 'var(--orange)' : 'var(--mint-dark)');
-return html`<div class="stats-card ${col ? 'collapsed' : ''}"><div class="stats-card-header" onClick=${() => setCol(!col)}><span>${col ? '▶' : '▼'} 📊 字符统计</span><div style=${{display:'flex', flexDirection:'column', alignItems:'flex-end'}}><span class="stats-total">${total.toLocaleString()} 字 <span class="token-count" style=${{color:tokenColor}}>~${totalTokens.toLocaleString()}tk</span></span><div style=${{width:100, height:4, background:'var(--cream-deep)', borderRadius:2, marginTop:4}}><div style=${{width:`${tokenPct}%`, height:'100%', background:tokenColor, borderRadius:2}}></div></div></div></div><div class="stats-card-body">${fieldCounts.map(([k, v]) => { const label = STATS_FIELDS.find(f => f[1] === k)?.[0]; return v > 0 ? html`<div class="stats-row" key=${k}><span class="stats-label">${label}</span><div class="stats-bar-wrap"><div class="stats-bar-fill" style=${{ width: `${pct(v)}%` }}/></div><span class="stats-val">${v.toLocaleString()}<span class="token-count">~${estimateTokens(data[k])}tk</span></span></div>` : null })}${altCount > 0 ? html`<div class="stats-row"><span class="stats-label">💬 备选开场白</span><div class="stats-bar-wrap"><div class="stats-bar-fill orange" style=${{ width: `${pct(altCount)}%` }}/></div><span class="stats-val">${altCount.toLocaleString()}</span></div>` : null}${(data.book_entries?.length > 0) && html`<div class="stats-row"><span class="stats-label">📚 世界书 ×${data.book_entries.length}</span><div class="stats-bar-wrap"><div class="stats-bar-fill purple" style=${{ width: `${pct(bookCount)}%` }}/></div><span class="stats-val">${bookCount.toLocaleString()}</span></div>`}</div></div>` });
+/* ═══════════ 统计卡 — 纯净版 Token 统计 (大字号、无波浪号、无顶部进度条) ═══════════ */
+const StatsCard = memo(({ data }) => { 
+  const [col, setCol] = useState(true); 
+  if (!data) return null; 
+  
+  const { fieldTokens, totalTokens, wbStats, altTokens } = useMemo(() => { 
+    const ft = [];
+    let tk = 0; 
+    
+    // 1. 计算基础字段 Token
+    STATS_FIELDS.forEach(([label, k]) => { 
+      const t = estimateTokens(data[k]);
+      if (t > 0) ft.push({ label, key: k, tokens: t });
+      tk += t;
+    }); 
+    
+    // 2. 计算备选开场白 Token
+    const altT = estimateTokens((data.alternate_greetings || []).join('\n'));
+    tk += altT;
+    
+    // 3. 计算世界书 Token（细分蓝绿灯）
+    let wbTotalTk = 0;
+    let wbConstTk = 0;
+    let wbSelTk = 0;
+    (data.book_entries || []).forEach(e => {
+      const eTk = estimateTokens(e.content) + estimateTokens(e.name);
+      tk += eTk;
+      wbTotalTk += eTk;
+      if (e.constant) wbConstTk += eTk;
+      else wbSelTk += eTk;
+    });
+
+    return { 
+      fieldTokens: ft, 
+      totalTokens: tk, 
+      altTokens: altT,
+      wbStats: { count: (data.book_entries || []).length, total: wbTotalTk, constant: wbConstTk, selective: wbSelTk }
+    } 
+  }, [data.name, data.description, data.personality, data.scenario, data.first_message, data.message_example, data.system_prompt, data.post_history_instructions, data.creator_notes, data.alternate_greetings, data.book_entries]); 
+  
+  const pct = v => totalTokens ? (v / totalTokens) * 100 : 0; 
+  // 【已修改】将总Token数强行设定为活力橙色
+  const tokenColor = '#66ccff';
+
+return html`<div class="stats-card ${col ? 'collapsed' : ''}">
+  <div class="stats-card-header" onClick=${() => setCol(!col)} title="点击展开/折叠详细统计" style=${{fontSize: 15}}>
+    <div style=${{display:'flex', alignItems:'center', gap: 8, fontWeight: 700, color: 'var(--text-dark)'}}>
+      <span style=${{color:'var(--text-soft)', width: 14, display:'inline-block'}}>${col ? '▶' : '▼'}</span>
+      <span>📊 字符统计</span>
+    </div>
+    
+    <div title="Tokens是AI消耗的算力单位。" style=${{display:'flex', alignItems:'center', gap: 8, background: 'var(--cream)', padding: '4px 12px', borderRadius: 20, border: '1px solid var(--cream-deep)'}}>
+      <!-- 【已修改】这里的 fontSize 改成了 18，fontWeight 改成了 900（加粗），颜色使用了上方定义的活力橙 -->
+      <span style=${{fontSize: 18, color: tokenColor, fontWeight: 900}}>${totalTokens.toLocaleString()} <span style=${{fontSize: 12, color: 'var(--text-soft)', fontWeight: 'normal'}}>Tokens</span></span>
+    </div>
+  </div>
+
+  <div class="stats-card-body">
+    <!-- 【已修改】下面的 fontWeight: 'bold' 为新增的加粗属性 -->
+    ${fieldTokens.map(f => html`<div class="stats-row" key=${f.key}><span class="stats-label" style=${{fontSize: 14, fontWeight: 'bold'}}>${f.label}</span><div class="stats-bar-wrap"><div class="stats-bar-fill" style=${{ width: `${pct(f.tokens)}%` }}/></div><span class="stats-val token-count" style=${{fontSize: 14, fontWeight: 'bold', color:'var(--text)', background:'transparent', padding:0}}>${f.tokens.toLocaleString()} tk</span></div>`)}
+    
+    ${altTokens > 0 ? html`<div class="stats-row"><span class="stats-label" style=${{fontSize: 14, fontWeight: 'bold'}}>💬 备选开场白</span><div class="stats-bar-wrap"><div class="stats-bar-fill orange" style=${{ width: `${pct(altTokens)}%` }}/></div><span class="stats-val token-count" style=${{fontSize: 14, fontWeight: 'bold', color:'var(--orange)', background:'transparent', padding:0}}>${altTokens.toLocaleString()} tk</span></div>` : null}
+    
+    ${wbStats.count > 0 ? html`
+      <div class="stats-row" style=${{alignItems: 'center', marginTop: 8}}>
+        <span class="stats-label" style=${{fontSize: 14, fontWeight: 'bold'}}>📚 世界书 ×${wbStats.count}</span>
+        <div class="stats-bar-wrap"><div class="stats-bar-fill purple" style=${{ width: `${pct(wbStats.total)}%` }}/></div>
+        <span class="stats-val token-count" style=${{fontSize: 14, fontWeight: 'bold', color:'var(--purple)', background:'transparent', padding:0}}>${wbStats.total.toLocaleString()} tk</span>
+      </div>
+      ${wbStats.constant > 0 ? html`<div class="stats-row" style=${{alignItems: 'center'}}><span class="stats-label" style=${{paddingLeft: 20, color:'var(--sky)', fontSize: 13, fontWeight: 'bold'}}>↳ 常驻 (蓝灯)</span><div class="stats-bar-wrap" style=${{height: 4}}><div class="stats-bar-fill" style=${{ width: `${pct(wbStats.constant)}%`, background: 'var(--sky)' }}/></div><span class="stats-val token-count" style=${{fontSize: 13, fontWeight: 'bold', color:'var(--sky)', background:'transparent', padding:0}}>${wbStats.constant.toLocaleString()} tk</span></div>` : null}
+      ${wbStats.selective > 0 ? html`<div class="stats-row" style=${{alignItems: 'center'}}><span class="stats-label" style=${{paddingLeft: 20, color:'var(--mint-dark)', fontSize: 13, fontWeight: 'bold'}}>↳ 触发 (绿灯)</span><div class="stats-bar-wrap" style=${{height: 4}}><div class="stats-bar-fill" style=${{ width: `${pct(wbStats.selective)}%`, background: 'var(--mint-dark)' }}/></div><span class="stats-val token-count" style=${{fontSize: 13, fontWeight: 'bold', color:'var(--mint-dark)', background:'transparent', padding:0}}>${wbStats.selective.toLocaleString()} tk</span></div>` : null}
+    ` : null}
+  </div>
+</div>` });
+
     /* ═══════════ 备份弹窗 ═══════════ */
     const BackupModal = memo(({ show, onClose, pv, pi, cfg, jL, pL, gr, gL, onApply, addToast }) => { const fileRef = useRef(); if (!show) return null; return html`<${Modal} show onClose=${onClose} title="💾 备份" headerClass="purple"><div class="backup-section"><h4>📤 导出配置</h4><button class="btn purple" onClick=${() => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify({ pv, pi, cfg, jL, pL, gr, gL }, null, 2)])); a.download = 'meow-backup-' + formatBackupDate() + '.json'; a.click(); URL.revokeObjectURL(a.href); addToast('导出成功', 'success') }}>📤 导出</button></div><div class="backup-section"><h4>📥 导入配置</h4><label class="btn primary" style=${{ cursor: 'pointer' }}>📥 选择文件<input ref=${fileRef} type="file" accept=".json" class="hidden" onChange=${async e => { const f = e.target.files[0]; if (!f) return; try { onApply(JSON.parse(await f.text())); addToast('导入成功', 'success') } catch { addToast('格式错误', 'error') } e.target.value = '' }}/></label></div><//>` });
 
@@ -4428,8 +4655,10 @@ ${expandMatch && html`<${ReplaceExpandModal} match=${expandMatch} checked=${!!ch
     /* ═══════════ P-2: 拆分 Header 为独立组件 ═══════════ */
     const HeaderBar = memo(({ hasApiKey, modelDropRef, modelDropOpen, setModelDropOpen, model, setModel, modelFilter, setModelFilter, filteredNavModels, navModels, kbFocusIdx, handleModelDropKeyDown, closeModelDrop, refreshModels, openModal, toggleTheme, theme, cycleFontSize, fontSize, setMobileMenuOpen, isMobile }) => {
       return html`<header class="header">
-<div class="header-title"><span class="cat-icon" aria-hidden="true">🐱</span><span>喵喵角色卡工坊</span>${''/* @SLOT:TITLE_BADGE */}<span class="ver-badge">📱 v${APP_VERSION}</span>${''/* @SLOT:TITLE_BADGE_END */}</div>
+<div class="header-title" style=${isMobile ? { maxWidth: '55%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } : {}}><span class="cat-icon" aria-hidden="true">🐱</span><span>喵喵角色卡工坊</span>${''/* @SLOT:TITLE_BADGE */}<span class="ver-badge">📱 v${APP_VERSION}</span>${''/* @SLOT:TITLE_BADGE_END */}</div>
+
 <div class="header-actions">
+
 ${''/* @SLOT:SYNC_STATUS */}${''/* @SLOT:SYNC_STATUS_END */}
 ${/* U-15: Clickable connection badge */''} ${hasApiKey ? html`<span class="header-btn conn-badge" style=${{ padding: '6px 12px', fontSize: 11, cursor: 'pointer', background: 'rgba(124,201,184,.4)', borderColor: 'rgba(124,201,184,.6)' }} onClick=${() => openModal(MK.SETTINGS)} aria-label="API已连接">🟢 已连接</span>` : html`<span class="header-btn conn-badge" style=${{ padding: '6px 12px', fontSize: 11, cursor: 'pointer', background: 'rgba(201,147,156,.3)', borderColor: 'rgba(201,147,156,.5)' }} onClick=${() => openModal(MK.SETTINGS)} aria-label="API未连接 — 点击设置">🔴 未连接</span>`}
 <div class="header-select" ref=${modelDropRef}><span aria-hidden="true">🤖</span><div class="model-dropdown-wrap"><div class="model-dropdown-trigger" onClick=${() => { setModelDropOpen(p => !p); if (!modelDropOpen) { setModelFilter(''); } }} role="button" aria-haspopup="listbox" aria-expanded=${modelDropOpen}><span class="model-name">${model || '选择模型'}</span><span class="drop-arrow" aria-hidden="true">${modelDropOpen ? '▲' : '▼'}</span></div>${modelDropOpen && html`<>${isMobile && html`<div class="model-dropdown-backdrop" onClick=${closeModelDrop}/>`}<div class="model-dropdown-panel" onClick=${e => e.stopPropagation()} role="listbox"><div class="mdp-handle"/><div class="mdp-header"><span class="mdp-title">🤖 选择模型</span><button class="mdp-close" onClick=${closeModelDrop} aria-label="关闭">✕</button></div><input class="mdp-search" placeholder="🔍 筛选模型..." value=${modelFilter} onChange=${e => { setModelFilter(e.target.value); }} onKeyDown=${handleModelDropKeyDown} autoFocus=${!isMobile}/><div class="mdp-list">${filteredNavModels.length ? filteredNavModels.map((m, mi) => html`<div key=${m} class="mdp-item ${m === model ? 'active' : ''} ${mi === kbFocusIdx ? 'kb-focus' : ''}" onClick=${() => { setModel(m); closeModelDrop() }} role="option" aria-selected=${m === model}><span class="check" aria-hidden="true">${m === model ? '✓' : ''}</span><span>${m}</span></div>`) : html`<div class="mdp-empty">😿 无匹配模型${!navModels.length ? html`<br/><span style=${{ fontSize: 12 }}>请先在 ⚙️ API设置 中配置模型</span>` : ''}</div>`}</div></div></>`}</div><button class="refresh-btn" onClick=${refreshModels} title="刷新模型列表" aria-label="刷新模型列表">🔄</button></div>
@@ -4804,12 +5033,14 @@ ${''/* @SLOT:SYNC_BUTTON */}<button class="header-btn desktop-only purple" onCli
         ${collapsed ? html`
           <button class="cute-fab-btn" title="点击展开，按住拖动">🛠️</button>
         ` : html`
-          <div class="drag-handle" title="按住拖动我"></div>
+          <button class="toolbar-toggle-btn" onClick=${(e) => { e.stopPropagation(); setCollapsed(true); }} title="收起工具栏">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+          </button>
           <button class="tool-btn" onClick=${() => openModal('lint')} title="检查角色卡健康度"><span class="icon">🩺</span><span class="label">体检</span></button>
           <button class="tool-btn" onClick=${() => openModal('snapshot')} title="保存或回滚快照"><span class="icon">📸</span><span class="label">快照</span></button>
           <button class="tool-btn" onClick=${() => openModal('preview')} title="全局预览"><span class="icon">👁️</span><span class="label">预览</span></button>
           <button class="tool-btn export-btn-cute" onClick=${() => openModal(MK.EXP)} disabled=${loading} title="导出角色卡"><span class="icon">💾</span><span class="label">导出</span></button>
-          <button class="toolbar-toggle-btn" onClick=${(e) => { e.stopPropagation(); setCollapsed(true); }} title="收起工具栏">✖</button>
+          <div class="drag-handle" title="按住拖动我"></div>
         `}
       </div>`;
     });
